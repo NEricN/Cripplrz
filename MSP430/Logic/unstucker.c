@@ -1,5 +1,10 @@
 #include "unstucker.h"
 
+int is_stuck()
+{
+    return get_stall_current() > 200;
+}
+
 int abs(int x)
 {
     return x > 0 ? x : -1*x;
@@ -35,7 +40,7 @@ void unstuck_procedure(int initial_left, int initial_right)
     int i=0, j=0;
     for(j; j < ROTATIONAL_TRIES; j++)
     {
-        for(i; get_stall_current() > STUCK_THRESHOLD && i < TURN_TRIES; i++)
+        for(i;!is_stuck() && i < TURN_TRIES; i++)
         {
             goBackwards();
             initial_left += ADJUSTMENT_THRESHOLD;
@@ -43,7 +48,7 @@ void unstuck_procedure(int initial_left, int initial_right)
             goForwards(initial_left, initial_right);
         }
 
-        if(get_stall_current() > STUCK_THRESHOLD)
+        if(is_stuck())
             rotateMotors();
         else
             return;
